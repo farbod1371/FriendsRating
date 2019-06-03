@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp"
+    android:id="@+id/nestedScrollView"
+    tools:context=".LoginActivity">
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/textInputEditLayoutEmail">
+
+        <EditText
+            android:id="@+id/textInputEditTextEmail"
+            android:inputType="textEmailAddress"
+            android:hint="Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/textInputEditLayoutPassword"
+        android:layout_below="@+id/textInputEditLayoutEmail"
+        app:passwordToggleEnabled="true"
+        android:layout_marginTop="20dp">
+        <!--android:layout_below="@+id/textInputEditLayoutEmail"-->
+
+
+        <EditText
+            android:id="@+id/textInputEditTextPassword"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/appCompatButtonLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textInputEditLayoutPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:text="Login" />
+
+
+    <TextView
+        android:id="@+id/recoverAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forgatten Password?"
+        android:textAlignment="center"
+        android:layout_below="@+id/appCompatButtonLogin"/>
+
+    <TextView
+        android:id="@+id/userAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Not have an account? Register"
+        android:textAlignment="center"
+        android:layout_below="@+id/appCompatButtonLogin"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20sp"/>
+
+
+
+
+</RelativeLayout>
