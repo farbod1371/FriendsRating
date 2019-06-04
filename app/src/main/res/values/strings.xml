@@ -21,4 +21,7 @@
     <string name="text_hello">Hello,</string>
     <string name="text_title">Android Tutorials Hub</string>
     <string name="google_maps_API_key">AIzaSyDCeHiy_hz3SDnjsAxnZORUpy0ALm1RVRA</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

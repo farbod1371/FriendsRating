@@ -26,6 +26,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 /**
  * Created by elessar1992 on 5/19/19.
@@ -147,6 +151,21 @@ public class RegisterActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            String email = user.getEmail();
+                            String userID = user.getUid();
+
+                            HashMap<Object, String> hashMap = new HashMap<>();
+                            hashMap.put("email", email);
+                            hashMap.put("uid", userID);
+                            hashMap.put("name", email);
+                            hashMap.put("phone", email);
+                            hashMap.put("image", email);
+
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                            DatabaseReference reference = database.getReference("Users");
+                            reference.child(userID).setValue(hashMap);
+
                             Toast.makeText(RegisterActivity.this, "Registration Completed\n"+user.getEmail(),Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
                                     finish();
