@@ -173,9 +173,9 @@ public class LoginActivity extends AppCompatActivity
                     HashMap<Object, String> hashMap = new HashMap<>();
                     hashMap.put("email", email);
                     hashMap.put("uid", userID);
-                    hashMap.put("name", email);
-                    hashMap.put("phone", email);
-                    hashMap.put("image", email);
+                    hashMap.put("name", "");
+                    hashMap.put("phone", "");
+                    hashMap.put("image", "");
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
 

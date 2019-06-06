@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class ProfileActivity extends AppCompatActivity
 {
     FirebaseAuth firebaseAuth;
-    TextView myProfile;
+    //TextView myProfile;
 
     ActionBar actionBar;
 
@@ -32,10 +32,22 @@ public class ProfileActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //actionbar
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Profile");
+
+        //auth
         firebaseAuth = FirebaseAuth.getInstance();
-        myProfile = findViewById(R.id.profileID);
-        BottomNavigationView navigationView = findViewById(R.id.navigation);
+
+        //myProfile = findViewById(R.id.profiles);
+        BottomNavigationView navigationView = findViewById(R.id.navigationButton);
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
+
+        actionBar.setTitle("Home");
+        Home_Fragment fragment1 = new Home_Fragment();
+        FragmentTransaction f1 = getSupportFragmentManager().beginTransaction();
+        f1.replace(R.id.myContent,fragment1,"");
+        f1.commit();
 
     }
 
@@ -49,23 +61,23 @@ public class ProfileActivity extends AppCompatActivity
                             actionBar.setTitle("Home");
                             Home_Fragment fragment1 = new Home_Fragment();
                             FragmentTransaction f1 = getSupportFragmentManager().beginTransaction();
-                            f1.replace(R.id.container,fragment1,"");
+                            f1.replace(R.id.myContent,fragment1,"");
                             f1.commit();
                             return true;
 
                         case R.id.profiles:
-                            actionBar.setTitle("Home");
-                            Home_Fragment fragment2 = new Home_Fragment();
+                            actionBar.setTitle("Profile");
+                            ProfileFragment fragment2 = new ProfileFragment();
                             FragmentTransaction f2 = getSupportFragmentManager().beginTransaction();
-                            f2.replace(R.id.container,fragment2,"");
+                            f2.replace(R.id.myContent,fragment2,"");
                             f2.commit();
                             return true;
 
                         case R.id.users:
-                            actionBar.setTitle("Home");
-                            Home_Fragment fragment3 = new Home_Fragment();
+                            actionBar.setTitle("Users");
+                            UserFragment fragment3 = new UserFragment();
                             FragmentTransaction f3 = getSupportFragmentManager().beginTransaction();
-                            f3.replace(R.id.container,fragment3,"");
+                            f3.replace(R.id.myContent,fragment3,"");
                             f3.commit();
                             return true;
                     }
@@ -78,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user != null)
         {
-            myProfile.setText(user.getEmail());
+            //myProfile.setText(user.getEmail());
         }
         else
         {
