@@ -80,6 +80,14 @@ public class ProfileActivity extends AppCompatActivity
                             f3.replace(R.id.myContent,fragment3,"");
                             f3.commit();
                             return true;
+
+                        case R.id.chat:
+                            actionBar.setTitle("Chat");
+                            ChatFragment fragment4 = new ChatFragment();
+                            FragmentTransaction f4 = getSupportFragmentManager().beginTransaction();
+                            f4.replace(R.id.myContent,fragment4,"");
+                            f4.commit();
+                            return true;
                     }
                     return false;
                 }

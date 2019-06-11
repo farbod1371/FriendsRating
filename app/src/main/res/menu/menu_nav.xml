@@ -13,4 +13,8 @@
         android:title="User"
         android:icon="@drawable/ic_user_name"/>
 
+    <item android:id="@+id/chat"
+        android:title="Chats"
+        android:icon="@drawable/ic_chaticon"/>
+
 </menu>

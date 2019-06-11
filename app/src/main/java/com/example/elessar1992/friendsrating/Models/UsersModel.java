@@ -1,4 +1,4 @@
-package com.example.elessar1992.friendsrating;
+package com.example.elessar1992.friendsrating.Models;
 
 /**
  * Created by elessar1992 on 6/6/19.

@@ -1,6 +1,7 @@
-package com.example.elessar1992.friendsrating;
+package com.example.elessar1992.friendsrating.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.elessar1992.friendsrating.ChatActivity;
+import com.example.elessar1992.friendsrating.R;
+import com.example.elessar1992.friendsrating.Models.UsersModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -37,9 +41,10 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.UsersHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UsersHolder usersHolder, int i)
+    public void onBindViewHolder(@NonNull UsersHolder usersHolder, final int i)
     {
         //getting the data
+        final String hisUID = listOfUsers.get(i).getUid();
         String userPicture = listOfUsers.get(i).getImage();
         String userName = listOfUsers.get(i).getName();
         final String userEmail = listOfUsers.get(i).getEmail();
@@ -61,7 +66,10 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.UsersHolder>
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(context,""+userEmail,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,""+userEmail,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("hisUid", hisUID);
+                context.startActivity(intent);
             }
         });
     }
