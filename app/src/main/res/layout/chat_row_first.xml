@@ -27,8 +27,8 @@
         android:textSize="16sp"
         android:textColor="#000000"
         android:padding="15dp"
-        android:text="User Message"/>
-        <!--android:background="@drawable/chat_receiver"/>-->
+        android:text="User Message"
+        android:background="@drawable/chat_receiver"/>
 
     <TextView
         android:id="@+id/timeID"

@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,8 +32,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -105,8 +109,31 @@ public class ChatActivity extends AppCompatActivity
                     //getting data
                     String name =""+ ds.child("name").getValue();
                     hisImage =""+ ds.child("image").getValue();
+                    String typingStatus =""+ ds.child("typingTo").getValue();
+                    if(typingStatus.equals(myUid))
+                        userStatusCID.setText("Typing...");
+                    else
+                    {
+                        //getting the value of onlineStatus
+                        String onlineStatus = ""+ ds.child("onlineStatus").getValue();
+                        if(onlineStatus.equals("online"))
+                        {
+                            userStatusCID.setText(onlineStatus);
+                        }
+                        else
+                        {
+                            Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+                            android.text.format.DateFormat df = new android.text.format.DateFormat();
+                            calendar.setTimeInMillis(Long.parseLong(onlineStatus));
+                            String dateTime = df.format("dd/MM/yyyy hh:mm aa", calendar).toString();
+                            userStatusCID.setText("Last Seen at: "+ dateTime);
+                        }
+                    }
+
                     //setting data
                     nameCID.setText(name);
+
+
                     try
                     {
                         //already image recieved , making it to imageview in toolbar
@@ -143,8 +170,28 @@ public class ChatActivity extends AppCompatActivity
                 }
             }
         });
+        messageCID.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().trim().length() == 0)
+                    checkingTypeStatus("noOne");
+                else
+                    checkingTypeStatus(hisUid);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         readMessages();
-        //seenMessage();
+        seenMessage();
 
     }
 
@@ -234,6 +281,24 @@ public class ChatActivity extends AppCompatActivity
         }
     }
 
+    private void checkingOnlineStatus(String status)
+    {
+        DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("onlineStatus", status);
+        //updating value of online status of current user
+        dbReference.updateChildren(hashMap);
+    }
+
+    private void checkingTypeStatus(String typing)
+    {
+        DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("typingTo", typing);
+        //updating value of online status of current user
+        dbReference.updateChildren(hashMap);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -260,6 +325,7 @@ public class ChatActivity extends AppCompatActivity
     protected void onStart()
     {
         checkingUsers();
+        checkingOnlineStatus("online");
         super.onStart();
     }
 
@@ -267,6 +333,16 @@ public class ChatActivity extends AppCompatActivity
     protected void onPause()
     {
         super.onPause();
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        checkingOnlineStatus(timeStamp);
+        checkingTypeStatus("noOne");
         //dataForSeen.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        checkingOnlineStatus("online");
+        super.onResume();
     }
 }
