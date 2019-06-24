@@ -21,6 +21,13 @@ import android.widget.Toast;
 
 import com.example.elessar1992.friendsrating.Adapters.AdapterChat;
 import com.example.elessar1992.friendsrating.Models.ChatModel;
+import com.example.elessar1992.friendsrating.Models.UsersModel;
+import com.example.elessar1992.friendsrating.Notifications.APIService;
+import com.example.elessar1992.friendsrating.Notifications.Client;
+import com.example.elessar1992.friendsrating.Notifications.Data;
+import com.example.elessar1992.friendsrating.Notifications.Response;
+import com.example.elessar1992.friendsrating.Notifications.Sender;
+import com.example.elessar1992.friendsrating.Notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +43,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 /**
@@ -66,6 +76,9 @@ public class ChatActivity extends AppCompatActivity
     String myUid;
     String hisImage;
 
+    APIService apiService;
+    boolean notify = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -88,6 +101,9 @@ public class ChatActivity extends AppCompatActivity
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        //create API service
+        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
 
         Intent intent = getIntent();
         hisUid = intent.getStringExtra("hisUid");
@@ -158,6 +174,7 @@ public class ChatActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                notify = true;
                 String message = messageCID.getText().toString().trim();
                 //checking if text is empty
                 if(TextUtils.isEmpty(message))
@@ -168,6 +185,7 @@ public class ChatActivity extends AppCompatActivity
                 {
                     sendingMessage(message);
                 }
+                messageCID.setText("");
             }
         });
         messageCID.addTextChangedListener(new TextWatcher() {
@@ -250,7 +268,7 @@ public class ChatActivity extends AppCompatActivity
         });
     }
 
-    private void sendingMessage(String message)
+    private void sendingMessage(final String message)
     {
         String timestamp = String.valueOf(System.currentTimeMillis());
         //everytime user send message, a new child will be created in chats note that
@@ -263,7 +281,61 @@ public class ChatActivity extends AppCompatActivity
         hashMap.put("timestamp", timestamp);
         hashMap.put("isSeen", false);
         databaseReference.child("Chats").push().setValue(hashMap);
-        messageCID.setText("");
+
+
+
+        String msg = message;
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UsersModel usersModel = dataSnapshot.getValue(UsersModel.class);
+                if(notify)
+                {
+                    sendingNotification(hisUid, usersModel.getName(),message);
+                }
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendingNotification(final String hisUid, final String name, final String message)
+    {
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(hisUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    Token token = ds.getValue(Token.class);
+                    Data data = new Data(myUid,name+":"+message, "New Message",hisUid,R.drawable.ic_def_picture);
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<Response>() {
+                                @Override
+                                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                                    Toast.makeText(ChatActivity.this,""+response.message(),Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<Response> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void checkingUsers()
