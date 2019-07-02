@@ -347,7 +347,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
                 if (grantResults.length > 0)
                 {
                     boolean cameraPermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean writeStoragePermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStoragePermissionAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     if(cameraPermissionAccepted && writeStoragePermissionAccepted)
                     {
                         pickFromCamera();
@@ -364,7 +364,7 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
             {
                 if (grantResults.length > 0)
                 {
-                    boolean writeStoragePermissionAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStoragePermissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if(writeStoragePermissionAccepted)
                     {
                         pickFromGallery();
@@ -517,6 +517,10 @@ public class ProfileFragment extends android.support.v4.app.Fragment {
         {
             firebaseAuth.signOut();
             checkingUsers();
+        }
+        if(id == R.id.action_add_post)
+        {
+            startActivity(new Intent(getActivity(),AddPostActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

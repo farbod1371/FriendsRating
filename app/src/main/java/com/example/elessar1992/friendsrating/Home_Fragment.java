@@ -72,6 +72,10 @@ public class Home_Fragment extends android.support.v4.app.Fragment
             firebaseAuth.signOut();
             checkingUsers();
         }
+        if(id == R.id.action_add_post)
+        {
+            startActivity(new Intent(getActivity(),AddPostActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
